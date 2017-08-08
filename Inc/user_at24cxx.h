@@ -5,6 +5,8 @@
 #define AT24_DEV_ADDR 0xA0 // 8-bit with trailing 0
 #define AT24_SIZE 256 // Words
 
+#define AT24CXX_MAX_TIMEOUT_TICKS 1000
+
 void AT24CXX_Random_Read(uint8_t addr, uint8_t * pData);
 void AT24CXX_Byte_Write(uint8_t addr, uint8_t * pData);
 
