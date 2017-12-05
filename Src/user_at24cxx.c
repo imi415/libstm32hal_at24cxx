@@ -59,7 +59,9 @@ HAL_StatusTypeDef AT24CXX_Sequencial_Read(AT24_HandleTypeDef * at24, uint16_t ad
  */
 HAL_StatusTypeDef AT24CXX_Byte_Write(AT24_HandleTypeDef * at24, uint16_t addr, uint8_t * pData) {
   __HAL_LOCK(at24);
-  HAL_I2C_Mem_Write_DMA(&AT24_I2C_INTERFACE, AT24_DEV_ADDR, addr, 0x02, pData, 0x01);
+  uint8_t page = addr / 0x100;
+  uint8_t actual_dev_addr = (AT24_DEV_ADDR << 1 | page << 1);
+  HAL_I2C_Mem_Write_DMA(&AT24_I2C_INTERFACE, actual_dev_addr, (addr & 0xFF), 0x01, pData, 0x01);
   uint32_t tickStart = HAL_GetTick();
   while(!at24 -> TxFlag) {
     if ((HAL_GetTick() - tickStart) > AT24CXX_MAX_TIMEOUT_TICKS) {
@@ -79,7 +81,9 @@ HAL_StatusTypeDef AT24CXX_Byte_Write(AT24_HandleTypeDef * at24, uint16_t addr, u
  */
 HAL_StatusTypeDef AT24CXX_Sequencial_Write(AT24_HandleTypeDef * at24, uint16_t addr, uint8_t * pData, uint8_t length) {
   __HAL_LOCK(at24);
-  HAL_I2C_Mem_Write_DMA(&AT24_I2C_INTERFACE, AT24_DEV_ADDR, addr, 0x02, pData, length);
+  uint8_t page = addr / 0x100;
+  uint8_t actual_dev_addr = (AT24_DEV_ADDR << 1 | page << 1);
+  HAL_I2C_Mem_Write_DMA(&AT24_I2C_INTERFACE, actual_dev_addr, (addr & 0xFF), 0x01, pData, length);
   uint32_t tickStart = HAL_GetTick();
   while(!at24 -> TxFlag) {
     if ((HAL_GetTick() - tickStart) > AT24CXX_MAX_TIMEOUT_TICKS) {
